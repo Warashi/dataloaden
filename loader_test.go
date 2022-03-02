@@ -27,6 +27,7 @@ func TestLoader_Load(t *testing.T) {
 		Wait:  1 * time.Millisecond,
 	}
 	loader := dataloaden.NewLoader(config)
+	loader.Prime(-1, 1000)
 
 	tests := []struct {
 		name    string
@@ -34,8 +35,9 @@ func TestLoader_Load(t *testing.T) {
 		want    int
 		wantErr bool
 	}{
-		{name: "non-error/0", arg: 0, want: 0, wantErr: false},
-		{name: "error/1", arg: 1, want: 0, wantErr: true},
+		{name: "non-error", arg: 0, want: 0, wantErr: false},
+		{name: "error", arg: 1, want: 0, wantErr: true},
+		{name: "load-from-cache", arg: -1, want: 1000, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -69,6 +71,7 @@ func TestLoader_LoadAll(t *testing.T) {
 		Wait:  1 * time.Millisecond,
 	}
 	loader := dataloaden.NewLoader(config)
+	loader.Prime(-1, 1000)
 
 	tests := []struct {
 		name    string
@@ -76,7 +79,7 @@ func TestLoader_LoadAll(t *testing.T) {
 		want    []int
 		wantErr []bool
 	}{
-		{name: "normal", arg: []int{0, 1, 2, 3}, want: []int{0, 0, 20, 0}, wantErr: []bool{false, true, false, true}},
+		{name: "normal", arg: []int{-1, 0, 1, 2, 3}, want: []int{1000, 0, 0, 20, 0}, wantErr: []bool{false, false, true, false, true}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -115,11 +118,11 @@ func TestLoader_Prime(t *testing.T) {
 	}
 	loader := dataloaden.NewLoader(config)
 
-	if want, got := true, loader.Prime(10, 100); want != got {
+	if want, got := true, loader.Prime(10, 1000); want != got {
 		t.Errorf("want %v, got %v", want, got)
 	}
 
-	if want, got := false, loader.Prime(10, 100); want != got {
+	if want, got := false, loader.Prime(10, 1000); want != got {
 		t.Errorf("want %v, got %v", want, got)
 	}
 }
