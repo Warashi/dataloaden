@@ -123,3 +123,33 @@ func TestLoader_Prime(t *testing.T) {
 		t.Errorf("want %v, got %v", want, got)
 	}
 }
+
+func TestLoader_Clear(t *testing.T) {
+	fetch := func(keys []int) ([]int, []error) {
+		ret := make([]int, len(keys))
+		retErr := make([]error, len(keys))
+		for i := range keys {
+			if keys[i]%2 == 0 {
+				ret[i] = keys[i] * 10
+			} else {
+				retErr[i] = errors.New("some error")
+			}
+		}
+		return ret, retErr
+	}
+	config := dataloaden.LoaderConfig[int, int]{
+		Fetch: fetch,
+		Wait:  1 * time.Millisecond,
+	}
+	loader := dataloaden.NewLoader(config)
+
+	if want, got := true, loader.Prime(10, 100); want != got {
+		t.Errorf("want %v, got %v", want, got)
+	}
+
+	loader.Clear(10)
+
+	if want, got := true, loader.Prime(10, 100); want != got {
+		t.Errorf("want %v, got %v", want, got)
+	}
+}
