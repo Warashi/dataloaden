@@ -1,4 +1,5 @@
 # dataloaden
+[![Go Reference](https://pkg.go.dev/badge/github.com/Warashi/dataloaden.svg)](https://pkg.go.dev/github.com/Warashi/dataloaden)
 [![Coverage Status](https://coveralls.io/repos/github/Warashi/dataloaden/badge.svg?branch=main)](https://coveralls.io/github/Warashi/dataloaden?branch=main)
 
 this is the dataloader pattern library for a GraphQL server.
