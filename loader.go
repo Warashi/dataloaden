@@ -110,18 +110,7 @@ func (l *Loader[K, V]) LoadThunk(key K) func() (V, error) {
 // LoadAll fetches many keys at once. It will be broken into appropriate sized
 // sub batches depending on how the loader is configured
 func (l *Loader[K, V]) LoadAll(keys []K) ([]V, []error) {
-	results := make([]func() (V, error), len(keys))
-
-	for i, key := range keys {
-		results[i] = l.LoadThunk(key)
-	}
-
-	vs := make([]V, len(keys))
-	errors := make([]error, len(keys))
-	for i, thunk := range results {
-		vs[i], errors[i] = thunk()
-	}
-	return vs, errors
+	return l.LoadAllThunk(keys)()
 }
 
 // LoadAllThunk returns a function that when called will block waiting for a Vs.
